@@ -1,0 +1,31 @@
+.counter {
+  margin-top: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 50px;
+  background-color: aquamarine;
+  box-sizing: border-box;
+  border: solid 1px #000;
+  border-radius: 10px;
+
+  &__value {
+    font-size: 24px;
+  }
+
+  &__container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 15px;
+  }
+
+  &__button {
+    cursor: pointer;
+    box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.2);
+  }
+
+
+}
