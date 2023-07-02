@@ -1,4 +1,6 @@
-import { addCustomerAction, removeCustomerAction } from "../store/customerReducer";
+import { fetchCustomers } from "../asyncActions/customers";
+import { addCashAction, getCashAction } from "../store/cashReducer";
+import { addCustomerAction, removeCustomerAction, addManyCustomersAction } from "../store/customerReducer";
 import "./style.scss";
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -9,12 +11,12 @@ export default function Counter() {
   const customers = useSelector(state => state.customers.customers);
 
   const addCash = (cash) => {
-    dispatch({ type: "ADD_CASH", payload: cash })
-  }
+    dispatch(addCashAction(cash))
+  };
 
   const getCash = (cash) => {
-    dispatch({ type: "GET_CASH", payload: cash })
-  }
+    dispatch(getCashAction(cash))
+  };
 
   const addCustomer = (name) => {
     const customer = {
@@ -22,10 +24,19 @@ export default function Counter() {
       id: name,
     }
     dispatch(addCustomerAction(customer))
-  }
+  };
 
   const removeCustomer = (customer) => {
     dispatch(removeCustomerAction(customer.id))
+  };
+
+  const addAllCustomers = async () => {
+    try {
+      const json = await fetchCustomers();
+      dispatch(addManyCustomersAction(json))
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -52,16 +63,25 @@ export default function Counter() {
         >
           Добавить клиента
         </button>
+        <button
+          className="counter__button"
+          onClick={() => addAllCustomers()}
+        >
+          Получить всех клиентов
+        </button>
       </div>
       {customers.length > 0 ?
-        <div>
-          {customers.map(customer =>
-            <div
-              onClick={() => removeCustomer(customer)}
-            >
-              {customer.name}
-            </div>
-          )}
+        < div >
+          {
+            customers.map((item) =>
+              <div
+                key={item.id}
+                onClick={() => removeCustomer(item)}
+              >
+                {item.name}
+              </div>
+            )
+          }
         </div>
         :
         <div>
@@ -69,6 +89,6 @@ export default function Counter() {
         </div>
       }
 
-    </div>
+    </div >
   );
 }
