@@ -1,8 +1,8 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { cashReducer } from "../store/cashReducer";
-import { customerReducer } from "../store/customerReducer";
+import cashReducer from "./slices/cashSlice";
+import customerReducer from "./slices/customerSlice";
 
-const store = configureStore(
+export const store = configureStore(
   {
     reducer: combineReducers({
       cash: cashReducer,
@@ -10,5 +10,3 @@ const store = configureStore(
     })
   },
 );
-
-export default store;

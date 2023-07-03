@@ -1,6 +1,7 @@
-import { fetchCustomers } from "../asyncActions/customers";
-import { addCashAction, getCashAction } from "../store/cashReducer";
-import { addCustomerAction, removeCustomerAction, addManyCustomersAction } from "../store/customerReducer";
+import React from "react";
+import { fetchCustomers } from "../asyncActions/api";
+import { addCash, getCash } from "../store/slices/cashSlice";
+import { addCustomer, removeCustomer } from "../store/slices/customerSlice";
 import "./style.scss";
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -10,48 +11,20 @@ export default function Counter() {
   const cash = useSelector(state => state.cash.cash);
   const customers = useSelector(state => state.customers.customers);
 
-  const addCash = (cash) => {
-    dispatch(addCashAction(cash))
-  };
-
-  const getCash = (cash) => {
-    dispatch(getCashAction(cash))
-  };
-
-  const addCustomer = (name) => {
-    const customer = {
-      name,
-      id: name,
-    }
-    dispatch(addCustomerAction(customer))
-  };
-
-  const removeCustomer = (customer) => {
-    dispatch(removeCustomerAction(customer.id))
-  };
-
-  const addAllCustomers = async () => {
-    try {
-      const json = await fetchCustomers();
-      dispatch(addManyCustomersAction(json))
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   return (
     <div className="counter">
       <div className="counter__value">{cash}</div>
       <div className="counter__container">
         <button
           className="counter__button"
-          onClick={() => addCash(Number(prompt("Пополнить счет")))}
+          onClick={() => dispatch(addCash(Number(prompt("Пополнить счет"))))}
         >
           Пополнить счет
         </button>
         <button
+          disabled={cash <= 0 ? true : false}
           className="counter__button"
-          onClick={() => getCash(Number(prompt("Снять со счета")))}
+          onClick={() => dispatch(getCash(Number(prompt("Снять со счета"))))}
         >
           Снять со счета
         </button>
@@ -59,26 +32,26 @@ export default function Counter() {
       <div className="counter__container">
         <button
           className="counter__button"
-          onClick={() => addCustomer((prompt("Добавить клиента")))}
+          onClick={() => dispatch(addCustomer(prompt("Добавить клиента")))}
         >
           Добавить клиента
         </button>
         <button
           className="counter__button"
-          onClick={() => addAllCustomers()}
+          onClick={() => fetchCustomers(dispatch)}
         >
           Получить всех клиентов
         </button>
       </div>
-      {customers.length > 0 ?
+      {Object.keys(customers).map((key) => key).length > 0 ?
         < div >
           {
-            customers.map((item) =>
+            Object.keys(customers).map((key) =>
               <div
-                key={item.id}
-                onClick={() => removeCustomer(item)}
+                key={key}
+                onClick={() => dispatch(removeCustomer(key))}
               >
-                {item.name}
+                {customers[key].name}
               </div>
             )
           }

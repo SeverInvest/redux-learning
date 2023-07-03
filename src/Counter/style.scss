@@ -25,6 +25,10 @@
   &__button {
     cursor: pointer;
     box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.2);
+
+    &:disabled {
+      cursor: auto;
+    }
   }
 
 
